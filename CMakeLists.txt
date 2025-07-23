@@ -19,4 +19,5 @@ add_executable(code
     include/RS.h
     include/LSB.h
     include/Execute.h
+        include/Predictor.h
 )

@@ -1,5 +1,7 @@
 #include "../include/ALU.h"
 
+extern unsigned int pc;
+
 void ALU::Execute(const Instruction& ins){
     regs.PutValue(0, 0);
     switch (ins.type) {
@@ -11,18 +13,18 @@ void ALU::Execute(const Instruction& ins){
         }
         case InstructionType::AUIPC: {
             auto val = ins.imm;
-            regs.PutValue(ins.rd, val + pc);
+            regs.PutValue(ins.rd, val + ins.index);
             pc += 4;
             break;
         }
         case InstructionType::JAL: {
-            regs.PutValue(ins.rd, pc + 4);
+            regs.PutValue(ins.rd, ins.index + 4);
             int offset = static_cast<int>(ins.imm << 12) >> 12;
             pc = pc + offset;
             break;
         }
         case InstructionType::JALR: {
-            regs.PutValue(ins.rd, pc + 4);
+            regs.PutValue(ins.rd, ins.index + 4);
             pc = regs.GetValue(ins.rs1) + ins.imm;
             break;
         }

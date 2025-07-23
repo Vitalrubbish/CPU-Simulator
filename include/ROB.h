@@ -15,27 +15,34 @@ struct ROBEntry {
 
     ROBEntry() = default;
 
-    ROBEntry(const Instruction& ins, const unsigned int& dest): ins(ins), dest(dest), state(State::EXECUTE) {}
+    explicit ROBEntry(const Instruction& ins): ins(ins), state(State::EXECUTE), dest(ins.rd) {}
 };
 
 class ROB {
-    ROBEntry entry[ROB_size + 1]{};
     int head = 0;
     int tail = 0;
 public:
+
+    ROBEntry entry[ROB_size + 1]{};
+
     ROB() = default;
 
     [[nodiscard]] int size() const {
         return (tail - head + ROB_size + 1) % (ROB_size + 1);
     }
 
-    bool addEntry(const ROBEntry& e) {
+    bool full() const {
+        return size() == ROB_size;
+    }
+
+    int addEntry(const ROBEntry& e) {
+        int ret = -1;
         if (size() < ROB_size) {
+            ret = tail;
             entry[tail] = e;
             tail = (tail + 1) % (ROB_size + 1);
-            return true;
         }
-        return false;
+        return ret;
     }
 
     void cleanCommitEntry() {

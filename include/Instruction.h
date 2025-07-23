@@ -8,13 +8,20 @@ enum class InstructionType {
 };
 
 struct Instruction {
+    unsigned int index = 0;
     InstructionType type{};
     unsigned int rs1 = 0, rs2 = 0, rd = 0;
     unsigned int imm = 0;
 
     Instruction() = default;
 
-    explicit Instruction(const unsigned int &code);
+    Instruction(const unsigned int &code, const unsigned int &index);
+
+    bool LSType() const {
+        return type == InstructionType::LB || type == InstructionType::LH || type == InstructionType::LW ||
+            type == InstructionType::SB || type == InstructionType::SH || type == InstructionType::SW ||
+            type == InstructionType::LBU || type == InstructionType::LHU;
+    }
 
 };
 #endif //INSTRUCTION_H

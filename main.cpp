@@ -7,6 +7,7 @@
 #include "include/RS.h"
 #include "include/ROB.h"
 #include "include/LSB.h"
+#include "include/Predictor.h"
 
 
 int clk = 0;
@@ -17,11 +18,14 @@ ROB rob{};
 RS rs{};
 LSB lsb{};
 ALU alu{};
+Predictor predictor{};
 
 int main() {
     ManageInput();
     while (true) {
         ++clk;
         Issue();
+
+        break;
     }
 }

@@ -4,6 +4,9 @@
 #include "Instruction.h"
 #include "Register.h"
 
+extern Register regs;
+extern Memory memo;
+
 class ALU {
 public:
 

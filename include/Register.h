@@ -22,5 +22,13 @@ public:
     void PutValue(const unsigned int &index, const unsigned int& val) {
         reg[index] = val;
     }
+
+    int GetRecorder(const unsigned int &index) const {
+        return recorder[index];
+    }
+
+    void PutRecorder(const unsigned int &index, const int &val) {
+        recorder[index] = val;
+    }
 };
 #endif //REGISTER_H
