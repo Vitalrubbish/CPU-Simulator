@@ -1,13 +1,6 @@
-#ifndef EXECUTOR_H
-#define EXECUTOR_H
-#include "Memory.h"
-#include "Instruction.h"
-#include <unistd.h>
-extern Memory memo;
-extern Register regs;
-unsigned int pc = 0;
+#include "../include/ALU.h"
 
-inline void ExecuteSingle(const Instruction& ins) {
+void ALU::Execute(const Instruction& ins){
     regs.PutValue(0, 0);
     switch (ins.type) {
         case InstructionType::LUI: {
@@ -258,16 +251,3 @@ inline void ExecuteSingle(const Instruction& ins) {
         default:;
     }
 }
-int clk = 0;
-inline unsigned int Execute() {
-    while (true) {
-        ++clk;
-        unsigned int code = memo.GetInstructionCode(pc);
-        if (code == 0x0ff00513) {
-            return regs.GetValue(10) % 256;
-        }
-        Instruction ins{code};
-        ExecuteSingle(ins);
-    }
-}
-#endif //EXECUTOR_H
