@@ -107,6 +107,7 @@ unsigned int GetImm5(const unsigned int &code) {
 
 Instruction::Instruction(const unsigned int &code, const unsigned int &index) {
     this -> index = index;
+    this -> code = code;
     unsigned int opCode = GetOpCode(code);
     unsigned int func3 = GetFunc3(code);
     unsigned int func7 = GetFunc7(code);

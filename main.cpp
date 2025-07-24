@@ -19,13 +19,16 @@ RS rs{};
 LSB lsb{};
 ALU alu{};
 Predictor predictor{};
+bool logout = false;
 
 int main() {
     ManageInput();
-    while (true) {
+    while (!logout) {
         ++clk;
         Issue();
-
-        break;
+        Exec();
+        Broadcast();
+        logout = Commit();
     }
+    std::cout << regs.GetValue(10) % 256 << '\n';
 }

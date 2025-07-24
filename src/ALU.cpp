@@ -1,255 +1,173 @@
 #include "../include/ALU.h"
 
-extern unsigned int pc;
+extern unsigned int qc;
 
-void ALU::Execute(const Instruction& ins){
+unsigned int ALU::Calculate(const RSEntry& entry){
     regs.PutValue(0, 0);
-    switch (ins.type) {
+    switch (entry.type) {
         case InstructionType::LUI: {
-            auto val = ins.imm;
-            regs.PutValue(ins.rd, val);
-            pc += 4;
-            break;
+            return entry.imm;
         }
         case InstructionType::AUIPC: {
-            auto val = ins.imm;
-            regs.PutValue(ins.rd, val + ins.index);
-            pc += 4;
-            break;
-        }
-        case InstructionType::JAL: {
-            regs.PutValue(ins.rd, ins.index + 4);
-            int offset = static_cast<int>(ins.imm << 12) >> 12;
-            pc = pc + offset;
-            break;
-        }
-        case InstructionType::JALR: {
-            regs.PutValue(ins.rd, ins.index + 4);
-            pc = regs.GetValue(ins.rs1) + ins.imm;
-            break;
+            return entry.imm + entry.index;
         }
         case InstructionType::BEQ: {
-            int offset = static_cast<int>(ins.imm << 20) >> 20;
-            if (regs.GetValue(ins.rs1) == regs.GetValue(ins.rs2)) {
-                pc = pc + offset;
-            } else {
-                pc += 4;
+            if (entry.v1 == entry.v2) {
+                return 1;
             }
-            break;
+            return 0;
         }
         case InstructionType::BGE: {
-            int offset = static_cast<int>(ins.imm << 20) >> 20;
-            if (regs.GetSignedValue(ins.rs1) >= regs.GetSignedValue(ins.rs2)) {
-                pc = pc + offset;
-            } else {
-                pc += 4;
+            if (static_cast<int>(entry.v1) >= static_cast<int>(entry.v2)) {
+                return 1;
             }
-            break;
+            return 0;
         }
         case InstructionType::BGEU: {
-            int offset = static_cast<int>(ins.imm << 20) >> 20;
-            if (regs.GetValue(ins.rs1) >= regs.GetValue(ins.rs2)) {
-                pc = pc + offset;
-            } else {
-                pc += 4;
+            if (entry.v1 >= entry.v2) {
+                return 1;
             }
-            break;
+            return 0;
         }
         case InstructionType::BLT: {
-            int offset = static_cast<int>(ins.imm << 20) >> 20;
-            if (regs.GetSignedValue(ins.rs1) < regs.GetSignedValue(ins.rs2)) {
-                pc = pc + offset;
-            } else {
-                pc += 4;
+            if (static_cast<int>(entry.v1) < static_cast<int>(entry.v2)) {
+                return 1;
             }
-            break;
+            return 0;
         }
         case InstructionType::BLTU: {
-            int offset = static_cast<int>(ins.imm << 20) >> 20;
-            if (regs.GetValue(ins.rs1) < regs.GetValue(ins.rs2)) {
-                pc = pc + offset;
-            } else {
-                pc += 4;
+            if (entry.v1 < entry.v2) {
+                return 1;
             }
-            break;
+            return 0;
         }
         case InstructionType::BNE: {
-            int offset = static_cast<int>(ins.imm << 20) >> 20;
-            if (regs.GetValue(ins.rs1) != regs.GetValue(ins.rs2)) {
-                pc = pc + offset;
-            } else {
-                pc += 4;
+            if (entry.v1 != entry.v2) {
+                return 1;
             }
-            break;
+            return 0;
         }
+        case InstructionType::ADD: {
+            return entry.v1 + entry.v2;
+        }
+        case InstructionType::SUB: {
+            return entry.v1 - entry.v2;
+        }
+        case InstructionType::AND: {
+            return entry.v1 & entry.v2;
+        }
+        case InstructionType::OR: {
+            return entry.v1 | entry.v2;
+        }
+        case InstructionType::XOR: {
+            return entry.v1 ^ entry.v2;
+        }
+        case InstructionType::SLL: {
+            return entry.v1 << entry.v2;
+        }
+        case InstructionType::SRL: {
+            return entry.v1 >> entry.v2;
+        }
+        case InstructionType::SRA: {
+            return static_cast<int>(entry.v1) >> entry.v2;
+        }
+        case InstructionType::SLT: {
+            if (static_cast<int>(entry.v1) < static_cast<int>(entry.v2)) {
+                return 1;
+            }
+            return 0;
+        }
+        case InstructionType::SLTU: {
+            if (entry.v1 < entry.v2) {
+                return 1;
+            }
+            return 0;
+        }
+        case InstructionType::ADDI: {
+            int imm = static_cast<int>(entry.imm << 20) >> 20;
+            return entry.v1 + imm;
+        }
+        case InstructionType::ANDI: {
+            return entry.v1 & entry.imm;
+        }
+        case InstructionType::ORI: {
+            return entry.v1 | entry.imm;
+        }
+        case InstructionType::XORI: {
+            return entry.v1 ^ entry.imm;
+        }
+        case InstructionType::SLLI: {
+            return entry.v1 << entry.imm;
+        }
+        case InstructionType::SRLI: {
+            return entry.v1 >> entry.imm;
+        }
+        case InstructionType::SRAI: {
+            return static_cast<int>(entry.v1) >> entry.imm;
+        }
+        case InstructionType::SLTI: {
+            if (static_cast<int>(entry.v1) < static_cast<int>(entry.imm)) {
+                return 1;
+            }
+            return 0;
+        }
+        case InstructionType::SLTIU: {
+            if (entry.v1 < entry.imm) {
+                return 1;
+            }
+            return 0;
+        }
+        default: {
+            return entry.index + 4;
+        }
+    }
+}
+
+unsigned int ALU::ExecuteLS(const Instruction &ins) {
+    switch(ins.type) {
         case InstructionType::LB: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
-            regs.PutValue(ins.rd, memo.LoadByte(index, true));
-            pc += 4;
-            break;
+            return memo.LoadByte(index, true);
         }
         case InstructionType::LBU: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
-            regs.PutValue(ins.rd, memo.LoadByte(index, false));
-            pc += 4;
-            break;
+            return memo.LoadByte(index, false);
         }
         case InstructionType::LH: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
-            regs.PutValue(ins.rd, memo.LoadHalf(index, true));
-            pc += 4;
-            break;
+            return memo.LoadHalf(index, true);
         }
         case InstructionType::LHU: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
-            regs.PutValue(ins.rd, memo.LoadHalf(index, false));
-            pc += 4;
-            break;
+            return memo.LoadHalf(index, false);
         }
         case InstructionType::LW: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
-            regs.PutValue(ins.rd, memo.LoadWord(index));
-            pc += 4;
-            break;
+            return memo.LoadWord(index);
         }
         case InstructionType::SB: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
             memo.StoreByte(index, regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
+            return 0;
         }
         case InstructionType::SH: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
             memo.StoreHalf(index, regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
+            return 0;
         }
         case InstructionType::SW: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
             memo.StoreWord(index, regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
+            return 0;
         }
-        case InstructionType::ADD: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) + regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::SUB: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) - regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::AND: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) & regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::OR: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) | regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::XOR: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) ^ regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::SLL: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) << regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::SRL: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) >> regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::SRA: {
-            regs.PutValue(ins.rd, regs.GetSignedValue(ins.rs1) >> regs.GetValue(ins.rs2));
-            pc += 4;
-            break;
-        }
-        case InstructionType::SLT: {
-            if (regs.GetSignedValue(ins.rs1) < regs.GetSignedValue(ins.rs2)) {
-                regs.PutValue(ins.rd, 1);
-            } else {
-                regs.PutValue(ins.rd, 0);
-            }
-            pc += 4;
-            break;
-        }
-        case InstructionType::SLTU: {
-            if (regs.GetValue(ins.rs1) < regs.GetValue(ins.rs2)) {
-                regs.PutValue(ins.rd, 1);
-            } else {
-                regs.PutValue(ins.rd, 0);
-            }
-            pc += 4;
-            break;
-        }
-        case InstructionType::ADDI: {
-            int imm = static_cast<int>(ins.imm << 20) >> 20;
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) + imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::ANDI: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) & ins.imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::ORI: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) | ins.imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::XORI: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) ^ ins.imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::SLLI: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) << ins.imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::SRLI: {
-            regs.PutValue(ins.rd, regs.GetValue(ins.rs1) >> ins.imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::SRAI: {
-            regs.PutValue(ins.rd, regs.GetSignedValue(ins.rs1) >> ins.imm);
-            pc += 4;
-            break;
-        }
-        case InstructionType::SLTI: {
-            if (regs.GetValue(ins.rs1) < ins.imm) {
-                regs.PutValue(ins.rd, 1);
-            } else {
-                regs.PutValue(ins.rd, 0);
-            }
-            pc += 4;
-            break;
-        }
-        case InstructionType::SLTIU: {
-            if (regs.GetSignedValue(ins.rs1) < static_cast<int>(ins.imm)) {
-                regs.PutValue(ins.rd, 1);
-            } else {
-                regs.PutValue(ins.rd, 0);
-            }
-            pc += 4;
-            break;
-        }
-        default:;
+        default: return 0;
     }
 }

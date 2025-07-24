@@ -8,6 +8,7 @@ enum class InstructionType {
 };
 
 struct Instruction {
+    unsigned int code = 0;
     unsigned int index = 0;
     InstructionType type{};
     unsigned int rs1 = 0, rs2 = 0, rd = 0;
@@ -23,5 +24,10 @@ struct Instruction {
             type == InstructionType::LBU || type == InstructionType::LHU;
     }
 
+    bool BranchType() const {
+        return type == InstructionType::JALR || type == InstructionType::BEQ || type == InstructionType::BLT ||
+            type == InstructionType::BGE || type == InstructionType::BNE || type == InstructionType::BGEU ||
+            type == InstructionType::BLTU;
+    }
 };
 #endif //INSTRUCTION_H

@@ -1,5 +1,7 @@
 #ifndef REGISTER_H
 #define REGISTER_H
+
+
 class Register {
     unsigned int reg[32]{};
     int recorder[32]{};
@@ -11,9 +13,7 @@ public:
         }
     }
 
-    unsigned int GetValue(const unsigned int &index) const {
-        return reg[index];
-    }
+    unsigned int GetValue(const unsigned int &index) const;
 
     int GetSignedValue(const unsigned int &index) const {
         return static_cast<int>(reg[index]);
@@ -29,6 +29,14 @@ public:
 
     void PutRecorder(const unsigned int &index, const int &val) {
         recorder[index] = val;
+    }
+
+    void Refresh(const unsigned int& index, const unsigned int& val);
+
+    void clear() {
+        for (int & it : recorder) {
+            it = -1;
+        }
     }
 };
 #endif //REGISTER_H
