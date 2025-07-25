@@ -1,13 +1,13 @@
 #ifndef EXECUTE_H
 #define EXECUTE_H
-#include "include/Memory.h"
-#include "include/Register.h"
-#include "include/ALU.h"
-#include "include/Execute.h"
-#include "include/RS.h"
-#include "include/ROB.h"
-#include "include/LSB.h"
-#include "include/Predictor.h"
+#include "Memory.h"
+#include "Register.h"
+#include "ALU.h"
+#include "Execute.h"
+#include "RS.h"
+#include "ROB.h"
+#include "LSB.h"
+#include "Predictor.h"
 
 extern int clk;
 extern RS rs;
@@ -47,20 +47,31 @@ inline void Issue() {
         }
         rs.AddEntry(rs_entry);
     }
+    //std::cout << "Issue Instruction Successfully! Instruction code: " << std::hex << ins.index << '\n';
     Predictor::MovePc(ins);
 }
 
 inline void Exec() {
     if (!rs.empty()) {
+        //rob.PrintInfo();
         RSEntry rs_entry = rs.GetFirstPreparedEntry();
-        rob.entry[rs_entry.recorder].value = ALU::Calculate(rs_entry);
-        if (rs_entry.type == InstructionType::JALR) {
-            rob.entry[rs_entry.recorder].pc_value = rs_entry.v1 + rs_entry.imm;
-        } else if (rob.entry[rs_entry.recorder].ins.BranchType()) {
-            rob.entry[rs_entry.recorder].pc_value = rs_entry.index + static_cast<int>(rs_entry.imm);
+        if (rs_entry.type != InstructionType::NONE) {
+            unsigned int result = ALU::Calculate(rs_entry);
+            rob.entry[rs_entry.recorder].value = result;
+            if (rs_entry.type == InstructionType::JALR) {
+                rob.entry[rs_entry.recorder].pc_value = rs_entry.v1 + rs_entry.imm;
+            } else if (rob.entry[rs_entry.recorder].ins.BranchType()) {
+                if (result == 1) {
+                    int offset = static_cast<int>(rs_entry.imm << 20) >> 20;
+                    rob.entry[rs_entry.recorder].pc_value = rs_entry.index + offset;
+                } else {
+                    rob.entry[rs_entry.recorder].pc_value = rs_entry.index + 4;
+                }
+            }
+            rob.entry[rs_entry.recorder].state = State::EXECUTE;
+            rs.DeleteEntry(rs_entry);
+            //std::cout << "Execute Instruction Successfully! Instruction code: " << std::hex << rs_entry.index << '\n';
         }
-        rob.entry[rs_entry.recorder].state = State::EXECUTE;
-        rs.DeleteEntry(rs_entry);
     }
     if (!lsb.empty()) {
         LSBEntry lsb_entry = lsb.GetFirstEntry();
@@ -68,17 +79,25 @@ inline void Exec() {
             rob.entry[lsb_entry.recorder].value = ALU::ExecuteLS(rob.entry[lsb_entry.recorder].ins);
             rob.entry[lsb_entry.recorder].state = State::EXECUTE;
             lsb.DeleteEntry(lsb_entry);
+            //std::cout << "Execute Instruction Successfully! Instruction code: " << std::hex << lsb_entry.index << '\n';
         }
     }
 }
 
 inline void Broadcast() {
+    int head = rob.GetHead();
     for (int i = 0; i < ROB_size; i++) {
-        int index = (rob.GetHead() + i) % (ROB_size + 1);
+        int index = (head + i) % (ROB_size + 1);
         if (rob.entry[index].type == DestType::REG && rob.entry[index].state == State::EXECUTE) {
             rob.entry[index].state = State::BROADCAST;
             rs.ModifyRecorder(index, rob.entry[index].value);
             lsb.ModifyRecorder(index, rob.entry[index].value);
+            //std::cout << "Broadcast Instruction Successfully! Instruction code: " << std::hex << rob.entry[index].ins.index << '\n';
+            break;
+        }
+        if (rob.entry[index].type != DestType::REG && rob.entry[index].state == State::EXECUTE) {
+            rob.entry[index].state = State::BROADCAST;
+            //std::cout << "Broadcast Instruction Successfully! Instruction code: " << std::hex << rob.entry[index].ins.index << '\n';
             break;
         }
     }
@@ -89,8 +108,9 @@ inline bool Commit() {
     if (!rob.empty() && rob.entry[head].ins.code == 0x0ff00513) {
         return true;
     }
-    if (!rob.empty() || rob.entry[head].state == State::BROADCAST) {
+    if (!rob.empty() && rob.entry[head].state == State::BROADCAST) {
         rob.entry[head].state = State::COMMIT;
+        //std::cout << "Commit Instruction Successfully! Instruction code: " << rob.entry[head].ins.index << '\n';
         if (rob.entry[head].type == DestType::REG) {
             regs.Refresh(rob.entry[head].dest, rob.entry[head].value);
         }
@@ -102,8 +122,11 @@ inline bool Commit() {
                 rob.clear();
                 regs.clear();
                 pc = reversed_pc;
+            } else if (rob.size() == 1) {
+                pc = rob.entry[head].pc_value;
             }
         }
+        rob.deleteHead();
     }
     return false;
 }

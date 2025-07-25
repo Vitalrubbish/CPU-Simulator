@@ -8,9 +8,9 @@ extern Register regs;
 
 struct RSEntry {
     bool busy = false;
-    InstructionType type{};
+    InstructionType type = InstructionType::NONE;
     unsigned int index = 0;
-    unsigned int v1 = -1, v2 = -1;
+    unsigned int v1 = 0, v2 = 0;
     int q1 = -1, q2 = -1;
     unsigned int dest = 0;
     unsigned int imm = 0;
@@ -19,10 +19,14 @@ struct RSEntry {
     RSEntry() = default;
 
     explicit RSEntry(const Instruction& ins, const int& place) {
-        q1 = regs.GetRecorder(ins.rs1);
-        v1 = regs.GetValue(ins.rs1);
-        q2 = regs.GetRecorder(ins.rs2);
-        v2 = regs.GetValue(ins.rs2);
+        if (ins.rs1 != 0) {
+            q1 = regs.GetRecorder(ins.rs1);
+            v1 = regs.GetValue(ins.rs1);
+        }
+        if (ins.rs2 != 0) {
+            q2 = regs.GetRecorder(ins.rs2);
+            v2 = regs.GetValue(ins.rs2);
+        }
         imm = ins.imm; //注意v1 v2 a的符号问题
         dest = ins.rd;
         type = ins.type;
@@ -70,9 +74,9 @@ public:
     }
 
     RSEntry GetFirstPreparedEntry() {
-        for (auto it: this -> entry) {
-            if (it.q1 == -1 && it.q2 == -1) {
-                return it;
+        for (int i = 0; i < tail; i++) {
+            if (entry[i].q1 == -1 && entry[i].q2 == -1) {
+                return entry[i];
             }
         }
         return RSEntry{};

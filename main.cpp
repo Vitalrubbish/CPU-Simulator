@@ -8,6 +8,7 @@
 #include "include/ROB.h"
 #include "include/LSB.h"
 #include "include/Predictor.h"
+#include <unistd.h>
 
 
 int clk = 0;
@@ -22,13 +23,17 @@ Predictor predictor{};
 bool logout = false;
 
 int main() {
+    freopen("../testcases/bulgarian.data", "r", stdin);
+    //freopen("../logrus.txt", "w", stdout);
     ManageInput();
     while (!logout) {
         ++clk;
+        //std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
+        //std::cout << std::hex << pc << '\n';
         Issue();
         Exec();
         Broadcast();
         logout = Commit();
     }
-    std::cout << regs.GetValue(10) % 256 << '\n';
+    std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 }

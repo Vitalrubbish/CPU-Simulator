@@ -5,10 +5,6 @@ unsigned int Register::GetValue(const unsigned int& index) const {
 }
 
 void Register::Refresh(const unsigned int &index, const unsigned int &val) {
-    for (int i = 0; i < 32; i++) {
-        if (recorder[i] == index) {
-            recorder[i] = -1;
-            reg[i] = val;
-        }
-    }
+    recorder[index] = -1;
+    reg[index] = val;
 }

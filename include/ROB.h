@@ -2,6 +2,7 @@
 #define ROB_H
 #include "Instruction.h"
 #include "Register.h"
+#include <iostream>
 const int ROB_size = 5;
 
 enum class State {
@@ -27,9 +28,11 @@ struct ROBEntry {
             type = DestType::MEM;
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             dest = regs.GetValue(ins.rs1) + imm;
-        } else if {
+        } else if (!ins.BranchType()) {
             type = DestType::REG;
             dest = ins.rd;
+        } else {
+            type = DestType::BOOL;
         }
     }
 };
@@ -45,6 +48,10 @@ public:
 
     [[nodiscard]] int size() const {
         return (tail - head + ROB_size + 1) % (ROB_size + 1);
+    }
+
+    void PrintInfo() {
+        std::cout << "head = " << head << " tail = " << tail << '\n';
     }
 
     bool empty() const {
@@ -67,6 +74,10 @@ public:
             tail = (tail + 1) % (ROB_size + 1);
         }
         return ret;
+    }
+
+    void deleteHead() {
+        head = (head + 1) % (ROB_size + 1);
     }
 
     void clear() {

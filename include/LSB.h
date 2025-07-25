@@ -5,7 +5,8 @@ const int LSB_size = 5;
 
 struct LSBEntry {
     bool busy = false;
-    InstructionType type{};
+    InstructionType type = InstructionType::NONE;
+    unsigned int index;
     unsigned int v1 = 0, v2 = 0;
     int q1 = -1, q2 = -1;
     unsigned int dest = 0;
@@ -21,6 +22,7 @@ struct LSBEntry {
         v2 = regs.GetValue(ins.rs2);
         a = ins.imm; //注意v1 v2 a的符号问题
         dest = ins.rd;
+        index = ins.index;
         type = ins.type;
         recorder = place;
     }
