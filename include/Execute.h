@@ -73,7 +73,7 @@ inline void Exec() {
             //std::cout << "Execute Instruction Successfully! Instruction code: " << std::hex << rs_entry.index << '\n';
         }
     }
-    if (!lsb.empty()) {
+    if (!lsb.empty() && clk % 3 == 0) {
         LSBEntry lsb_entry = lsb.GetFirstEntry();
         if (lsb_entry.recorder == rob.GetHead() && lsb_entry.IsExecutable()) {
             rob.entry[lsb_entry.recorder].value = ALU::ExecuteLS(rob.entry[lsb_entry.recorder].ins);
@@ -112,18 +112,19 @@ inline bool Commit() {
         rob.entry[head].state = State::COMMIT;
         //std::cout << "Commit Instruction Successfully! Instruction code: " << rob.entry[head].ins.index << '\n';
         if (rob.entry[head].type == DestType::REG) {
-            regs.Refresh(rob.entry[head].dest, rob.entry[head].value);
+            rs.ModifyRecorder(head, rob.entry[head].value);
+            lsb.ModifyRecorder(head, rob.entry[head].value);
+            regs.Refresh(rob.entry[head].dest, head, rob.entry[head].value);
         }
         if (rob.entry[head].ins.BranchType()) {
-            if (rob.size() > 1 && rob.entry[next].ins.index != rob.entry[head].pc_value) {
+            if (rob.size() == 1 || rob.size() > 1 && rob.entry[next].ins.index != rob.entry[head].pc_value) {
                 unsigned int reversed_pc = rob.entry[head].pc_value;
                 lsb.clear();
                 rs.clear();
                 rob.clear();
                 regs.clear();
                 pc = reversed_pc;
-            } else if (rob.size() == 1) {
-                pc = rob.entry[head].pc_value;
+                return false;
             }
         }
         rob.deleteHead();

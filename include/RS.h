@@ -83,7 +83,7 @@ public:
     }
 
     void ModifyRecorder(int recorder, unsigned int val) {
-        for (auto it: entry) {
+        for (auto& it: entry) {
             if (it.q1 == recorder) {
                 it.q1 = -1;
                 it.v1 = val;

@@ -31,7 +31,7 @@ public:
         recorder[index] = val;
     }
 
-    void Refresh(const unsigned int& index, const unsigned int& val);
+    void Refresh(const unsigned int& index, const int& reco, const unsigned int& val);
 
     void clear() {
         for (int & it : recorder) {
