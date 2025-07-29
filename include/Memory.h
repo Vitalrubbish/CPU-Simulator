@@ -1,6 +1,5 @@
 #ifndef MEMORY_H
 #define MEMORY_H
-#include <iostream>
 #include "../utility/utility.h"
 constexpr int MemSize = 5e4;
 class Memory {

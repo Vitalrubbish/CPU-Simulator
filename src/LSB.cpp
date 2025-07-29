@@ -20,7 +20,7 @@ void LSB::ExecuteEntry() {
     if (!empty() && clk % 3 == 0) {
         LSBEntry lsb_entry = GetFirstEntry();
         if (lsb_entry.recorder == rob.GetHead() && lsb_entry.IsExecutable()) {
-            unsigned int value = ALU::ExecuteLS(lsb_entry);
+            unsigned int value = ALU::ExecuteLS(lsb_entry.ins);
             CDBEntry entry{Hardware::LSB, Hardware::ROB, TransferType::ModifyAfterExecute,
                 lsb_entry.recorder, value, 0, 0};
             cdb.AddRequirement(entry);

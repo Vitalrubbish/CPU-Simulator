@@ -25,7 +25,7 @@ CDB cdb{};
 bool logout = false;
 
 int main() {
-    // freopen("../testcases/pi.data", "r", stdin);
+    // freopen("../testcases/bulgarian.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();

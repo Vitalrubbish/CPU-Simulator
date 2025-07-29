@@ -15,6 +15,6 @@ public:
 
     static unsigned int Calculate(const RSEntry& entry);
 
-    static unsigned int ExecuteLS(const LSBEntry& ins);
+    static unsigned int ExecuteLS(const Instruction& ins);
 };
 #endif //EXECUTOR_H

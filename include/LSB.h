@@ -8,6 +8,7 @@ extern Register regs;
 
 struct LSBEntry {
     InstructionType type = InstructionType::NONE;
+    Instruction ins;
     unsigned int index = 0;
     unsigned int v1 = 0, v2 = 0;
     int q1 = -1, q2 = -1;
@@ -17,7 +18,7 @@ struct LSBEntry {
 
     LSBEntry() = default;
 
-    explicit LSBEntry(const Instruction& ins, const int& place) {
+    explicit LSBEntry(const Instruction& ins, const int& place): ins(ins) {
         q1 = regs.GetRecorder(ins.rs1);
         v1 = regs.GetValue(ins.rs1);
         q2 = regs.GetRecorder(ins.rs2);

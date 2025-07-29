@@ -1,5 +1,7 @@
 #ifndef EXECUTE_H
 #define EXECUTE_H
+
+
 #include "Memory.h"
 #include "Register.h"
 #include "ALU.h"
@@ -7,14 +9,13 @@
 #include "RS.h"
 #include "ROB.h"
 #include "LSB.h"
+#include "Predictor.h"
 
 extern int clk;
 extern RS rs;
 extern LSB lsb;
 extern ALU alu;
 extern ROB rob;
-extern unsigned int pc;
-
 
 
 inline void Issue() {
