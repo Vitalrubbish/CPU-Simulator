@@ -19,7 +19,7 @@ extern ROB rob;
 extern CDB cdb;
 extern bool cl;
 
-inline bool ROB_run() {
+/*inline bool ROB_run() {
     if (rob.Issue()) {
         return false;
     }
@@ -63,7 +63,7 @@ inline void Register_run() {
         return;
     }
     regs.CommitEntry();
-}
+}*/
 
 inline void RefreshStage() {
     cdb.Refresh();
@@ -76,7 +76,7 @@ inline void RefreshStage() {
     }
 }
 
-/*inline bool ROB_run() {
+inline bool ROB_run() {
     rob.Issue();
     rob.ExecuteEntry();
     return rob.CommitEntry();
@@ -100,5 +100,5 @@ inline void Register_run() {
     if (regs.Clear()) return;
     regs.Issue();
     regs.CommitEntry();
-}*/
+}
 #endif //EXECUTE_H
