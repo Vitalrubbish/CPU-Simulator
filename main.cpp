@@ -8,6 +8,7 @@
 #include "include/ROB.h"
 #include "include/LSB.h"
 #include "include/Predictor.h"
+#include "include/CDB.h"
 #include <unistd.h>
 
 
@@ -20,21 +21,24 @@ RS rs{};
 LSB lsb{};
 ALU alu{};
 Predictor predictor{};
+CDB cdb{};
 bool logout = false;
 
 int main() {
-    //freopen("../testcases/array_test1.data", "r", stdin);
-    //freopen("../logrus.txt", "w", stdout);
+    // freopen("../testcases/pi.data", "r", stdin);
+    // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
     while (!logout) {
         ++clk;
-        //std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
-        //std::cout << std::hex << pc << '\n';
+        // std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
+        // std::cout << std::hex << pc << '\n';
         Issue();
         Exec();
         Broadcast();
         logout = Commit();
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
+
+    // std::cout << "Total clk count: " << clk << '\n';
 }

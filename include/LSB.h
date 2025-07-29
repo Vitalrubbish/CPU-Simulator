@@ -1,16 +1,18 @@
 #ifndef LSB_H
 #define LSB_H
 #include "Instruction.h"
-const int LSB_size = 5;
+#include "Register.h"
+const int LSB_size = 8;
+
+extern Register regs;
 
 struct LSBEntry {
-    bool busy = false;
     InstructionType type = InstructionType::NONE;
-    unsigned int index;
+    unsigned int index = 0;
     unsigned int v1 = 0, v2 = 0;
     int q1 = -1, q2 = -1;
     unsigned int dest = 0;
-    unsigned int a = 0;
+    unsigned int imm = 0;
     int recorder = -1;
 
     LSBEntry() = default;
@@ -20,7 +22,7 @@ struct LSBEntry {
         v1 = regs.GetValue(ins.rs1);
         q2 = regs.GetRecorder(ins.rs2);
         v2 = regs.GetValue(ins.rs2);
-        a = ins.imm; //注意v1 v2 a的符号问题
+        imm = ins.imm; //注意v1 v2 a的符号问题
         dest = ins.rd;
         index = ins.index;
         type = ins.type;
@@ -86,5 +88,13 @@ public:
     void clear() {
         tail = 0;
     }
+
+    void Issue();
+
+    void ExecuteEntry();
+
+    void Broadcast();
+
+    void CommitEntry();
 };
 #endif //LSB_H

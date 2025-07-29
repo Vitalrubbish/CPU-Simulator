@@ -3,7 +3,9 @@
 #include "Instruction.h"
 #include "Register.h"
 #include <iostream>
-const int ROB_size = 5;
+const int ROB_size = 8;
+
+extern Register regs;
 
 enum class State {
     WAIT, EXECUTE, BROADCAST, COMMIT
@@ -50,7 +52,7 @@ public:
         return (tail - head + ROB_size + 1) % (ROB_size + 1);
     }
 
-    void PrintInfo() {
+    void PrintInfo() const {
         std::cout << "head = " << head << " tail = " << tail << '\n';
     }
 
@@ -83,5 +85,13 @@ public:
     void clear() {
         tail = head;
     }
+
+    void Issue();
+
+    void ExecuteEntry();
+
+    void Broadcast();
+
+    bool CommitEntry();
 };
 #endif //ROB_H

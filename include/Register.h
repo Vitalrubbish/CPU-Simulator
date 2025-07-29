@@ -31,12 +31,16 @@ public:
         recorder[index] = val;
     }
 
-    void Refresh(const unsigned int& index, const int& reco, const unsigned int& val);
+    void ModifyRecorder(const unsigned int& index, const int& reco, const unsigned int& val);
 
     void clear() {
         for (int & it : recorder) {
             it = -1;
         }
     }
+
+    void Issue();
+
+    void CommitEntry();
 };
 #endif //REGISTER_H

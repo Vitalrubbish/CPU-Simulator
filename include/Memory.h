@@ -78,5 +78,7 @@ public:
             mem[q] = SetBit(mem[q], i, bit);
         }
     }
+
+    void Issue();
 };
 #endif //MEMORY_H

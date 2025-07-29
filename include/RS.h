@@ -1,13 +1,13 @@
 #ifndef RS_H
 #define RS_H
 #include "Instruction.h"
+#include "Register.h"
 
-const int RS_size = 5;
+const int RS_size = 8;
 
 extern Register regs;
 
 struct RSEntry {
-    bool busy = false;
     InstructionType type = InstructionType::NONE;
     unsigned int index = 0;
     unsigned int v1 = 0, v2 = 0;
@@ -98,5 +98,13 @@ public:
     void clear() {
         tail = 0;
     }
+
+    void Issue();
+
+    void ExecuteEntry();
+
+    void Broadcast();
+
+    void CommitEntry();
 };
 #endif //RS_H

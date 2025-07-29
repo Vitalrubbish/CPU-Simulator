@@ -1,7 +1,7 @@
 #ifndef EXECUTOR_H
 #define EXECUTOR_H
 #include "Memory.h"
-#include "Instruction.h"
+#include "LSB.h"
 #include "Register.h"
 #include "RS.h"
 
@@ -15,6 +15,6 @@ public:
 
     static unsigned int Calculate(const RSEntry& entry);
 
-    static unsigned int ExecuteLS(const Instruction& ins);
+    static unsigned int ExecuteLS(const LSBEntry& ins);
 };
 #endif //EXECUTOR_H
