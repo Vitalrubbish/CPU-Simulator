@@ -17,31 +17,29 @@ extern LSB lsb;
 extern ALU alu;
 extern ROB rob;
 
-
-inline void Issue() {
+inline bool ROB_run() {
     rob.Issue();
-    rs.Issue();
-    lsb.Issue();
-    regs.Issue();
-}
-
-inline void Exec() {
-    lsb.ExecuteEntry();
-    rs.ExecuteEntry();
     rob.ExecuteEntry();
-}
-
-inline void Broadcast() {
     rob.Broadcast();
-    rs.Broadcast();
-    lsb.Broadcast();
+    return rob.CommitEntry();
 }
 
-inline bool Commit() {
-    bool halt = rob.CommitEntry();
+inline void RS_run() {
+    rs.Issue();
+    rs.ExecuteEntry();
+    rs.Broadcast();
     rs.CommitEntry();
-    regs.CommitEntry();
+}
+
+inline void LSB_run() {
+    lsb.Issue();
+    lsb.ExecuteEntry();
+    lsb.Broadcast();
     lsb.CommitEntry();
-    return halt;
+}
+
+inline void Register_run() {
+    regs.Issue();
+    regs.CommitEntry();
 }
 #endif //EXECUTE_H
