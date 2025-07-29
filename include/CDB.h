@@ -96,5 +96,10 @@ public:
         tail += nex_tail;
         nex_tail = 0;
     }
+
+    void Clear() {
+        tail = 0;
+        nex_tail = 0;
+    }
 };
 #endif //CDB_H

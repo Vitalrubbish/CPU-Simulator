@@ -7,6 +7,7 @@ extern unsigned int clk;
 extern ROB rob;
 extern CDB cdb;
 
+
 bool LSB::Issue() {
     CDBEntry req = cdb.ReceiveRequirement(Hardware::LSB, TransferType::AddEntry);
     if (req.type != TransferType::NONE) {
@@ -41,7 +42,6 @@ void LSB::CommitEntry() {
         ModifyRecorder(req.index, req.value);
         cdb.RemoveRequirement(req);
     }
-
 }
 
 bool LSB::Clear() {

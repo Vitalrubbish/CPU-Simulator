@@ -1,7 +1,7 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 #include "../utility/utility.h"
-constexpr int MemSize = 5e4;
+constexpr int MemSize = 3e5;
 class Memory {
     unsigned int mem[MemSize]{};
     unsigned int cursor = 0;

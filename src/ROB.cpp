@@ -6,7 +6,7 @@
 
 extern CDB cdb;
 extern Memory memo;
-
+extern bool cl;
 
 bool ROB::Issue() {
     Instruction ins{memo.GetInstructionCode(pc), pc};
@@ -47,6 +47,7 @@ bool ROB::ExecuteEntry() {
         entry[req.index].pc_value = req.pc_value;
         entry[req.index].state = State::EXECUTE;
         cdb.RemoveRequirement(req);
+        // std::cout << "ROB - Execute Instruction: " << std::hex << entry[req.index].ins.index << '\n';
         return true;
     }
     return false;
@@ -60,7 +61,7 @@ bool ROB::CommitEntry() {
     // std::cout << std::hex << entry[head].ins.index << '\n';
     if (!empty() && entry[head].state == State::EXECUTE) {
         entry[head].state = State::COMMIT;
-        // td::cout << "ROB - Commit Instruction: " << std::hex << entry[head].ins.index << '\n';
+        // std::cout << "ROB - Commit Instruction: " << std::hex << entry[head].ins.index << '\n';
         if (entry[head].type == DestType::REG) {
             CDBEntry rs_req{Hardware::ROB, Hardware::RS, TransferType::ModifyRecorder,
                 head, entry[head].value, 0, 0};
@@ -75,15 +76,7 @@ bool ROB::CommitEntry() {
         if (entry[head].ins.BranchType()) {
             if (size() == 1 || size() > 1 && entry[next].ins.index != entry[head].pc_value) {
                 unsigned int reversed_pc = entry[head].pc_value;
-                CDBEntry rs_req{Hardware::ROB, Hardware::RS, TransferType::Clear,
-                    0, 0, 0, 0};
-                CDBEntry lsb_req{Hardware::ROB, Hardware::LSB, TransferType::Clear,
-                    0, 0, 0, 0};
-                CDBEntry regs_req{Hardware::ROB, Hardware::Register, TransferType::Clear,
-                    0, 0, 0, 0};
-                cdb.AddRequirement(rs_req);
-                cdb.AddRequirement(lsb_req);
-                cdb.AddRequirement(regs_req);
+                cl = true;
                 clear();
                 pc = reversed_pc;
                 // std::cout << "ROB - Clear\n";

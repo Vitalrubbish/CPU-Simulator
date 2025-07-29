@@ -23,9 +23,10 @@ ALU alu{};
 Predictor predictor{};
 CDB cdb{};
 bool logout = false;
+bool cl = false;
 
 int main() {
-    // freopen("../testcases/basicopt1.data", "r", stdin);
+    // freopen("../testcases/pi.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -34,14 +35,15 @@ int main() {
         // std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
         // std::cout << std::hex << pc << '\n';
         logout = ROB_run();
-        LSB_run();
         RS_run();
+        LSB_run();
         Register_run();
 
-        cdb.Refresh();
         /*if (clk % 100 == 0) {
-            sleep(1);
+        sleep(1);
         }*/
+        RefreshStage();
+
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 

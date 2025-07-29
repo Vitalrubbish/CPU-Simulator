@@ -4,9 +4,10 @@
 
 class Register {
     unsigned int reg[32]{};
-    unsigned int phy_reg[32]{};
     int recorder[32]{};
 public:
+
+    unsigned int phy_reg = 0;
 
     Register() {
         for (int& it : recorder) {
