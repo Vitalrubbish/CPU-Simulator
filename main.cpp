@@ -49,5 +49,5 @@ int main() {
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 
-    std::cout << "Total clk count: " << clk << '\n';
+    // std::cout << "Total clk count: " << clk << '\n';
 }
