@@ -40,9 +40,6 @@ bool RS::ExecuteEntry() {
             cdb.AddRequirement(entry);
             DeleteEntry(rs_entry);
             // std::cout << "RS - Execute Instruction: " << std::hex << rs_entry.index << '\n';
-            if (rs_entry.index == 0x1128) {
-                int a = 1;
-            }
             return true;
         }
     }

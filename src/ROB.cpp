@@ -60,7 +60,7 @@ bool ROB::CommitEntry() {
     // std::cout << std::hex << entry[head].ins.index << '\n';
     if (!empty() && entry[head].state == State::EXECUTE) {
         entry[head].state = State::COMMIT;
-        // std::cout << "ROB - Commit Instruction: " << std::hex << entry[head].ins.index << '\n';
+        // td::cout << "ROB - Commit Instruction: " << std::hex << entry[head].ins.index << '\n';
         if (entry[head].type == DestType::REG) {
             CDBEntry rs_req{Hardware::ROB, Hardware::RS, TransferType::ModifyRecorder,
                 head, entry[head].value, 0, 0};

@@ -3,6 +3,7 @@
 #include "Instruction.h"
 #include "Register.h"
 #include <iostream>
+#include "CDB.h"
 const int ROB_size = 5;
 
 extern Register regs;
