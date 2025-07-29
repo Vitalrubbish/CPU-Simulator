@@ -18,28 +18,48 @@ extern ALU alu;
 extern ROB rob;
 
 inline bool ROB_run() {
-    rob.Issue();
-    rob.ExecuteEntry();
-    rob.Broadcast();
+    if (rob.Issue()) {
+        return false;
+    }
+    if (rob.ExecuteEntry()) {
+        return false;
+    }
     return rob.CommitEntry();
 }
 
 inline void RS_run() {
-    rs.Issue();
-    rs.ExecuteEntry();
-    rs.Broadcast();
+    if (rs.Clear()) {
+        return;
+    }
+    if (rs.Issue()) {
+        return;
+    }
+    if (rs.ExecuteEntry()) {
+        return;
+    }
     rs.CommitEntry();
 }
 
 inline void LSB_run() {
-    lsb.Issue();
-    lsb.ExecuteEntry();
-    lsb.Broadcast();
+    if (lsb.Clear()) {
+        return;
+    }
+    if (lsb.Issue()) {
+        return;
+    }
+    if (lsb.ExecuteEntry()) {
+        return;
+    }
     lsb.CommitEntry();
 }
 
 inline void Register_run() {
-    regs.Issue();
+    if (regs.Clear()) {
+        return;
+    }
+    if (regs.Issue()) {
+        return;
+    }
     regs.CommitEntry();
 }
 #endif //EXECUTE_H

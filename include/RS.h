@@ -3,7 +3,7 @@
 #include "Instruction.h"
 #include "Register.h"
 
-const int RS_size = 8;
+const int RS_size = 5;
 
 extern Register regs;
 
@@ -19,6 +19,9 @@ struct RSEntry {
     RSEntry() = default;
 
     explicit RSEntry(const Instruction& ins, const int& place) {
+        if (ins.index == 4164) {
+            int a = 1;
+        }
         if (ins.rs1 != 0) {
             q1 = regs.GetRecorder(ins.rs1);
             v1 = regs.GetValue(ins.rs1);
@@ -99,12 +102,12 @@ public:
         tail = 0;
     }
 
-    void Issue();
+    bool Issue();
 
-    void ExecuteEntry();
-
-    void Broadcast();
+    bool ExecuteEntry();
 
     void CommitEntry();
+
+    bool Clear();
 };
 #endif //RS_H

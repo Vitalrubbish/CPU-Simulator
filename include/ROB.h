@@ -3,7 +3,7 @@
 #include "Instruction.h"
 #include "Register.h"
 #include <iostream>
-const int ROB_size = 8;
+const int ROB_size = 5;
 
 extern Register regs;
 
@@ -86,11 +86,9 @@ public:
         tail = head;
     }
 
-    void Issue();
+    bool Issue();
 
-    void ExecuteEntry();
-
-    void Broadcast();
+    bool ExecuteEntry();
 
     bool CommitEntry();
 };

@@ -1,5 +1,6 @@
 #ifndef CDB_H
 #define CDB_H
+#include <iostream>
 #include "Instruction.h"
 
 const int CDB_size = 100;
@@ -9,7 +10,7 @@ enum class Hardware {
 
 enum class TransferType {
     ModifyAfterExecute, ModifyRecorder, Clear, SendInstruction,
-    AddEntry, PutRecorder, NONE
+    AddEntry, PutRecorder, ModifyRecorderAndValue, NONE
 };
 
 struct CDBEntry {

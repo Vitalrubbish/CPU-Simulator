@@ -40,8 +40,10 @@ public:
         }
     }
 
-    void Issue();
+    bool Issue();
 
     void CommitEntry();
+
+    bool Clear();
 };
 #endif //REGISTER_H

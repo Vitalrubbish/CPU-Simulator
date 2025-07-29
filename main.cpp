@@ -25,7 +25,7 @@ CDB cdb{};
 bool logout = false;
 
 int main() {
-    freopen("../testcases/naive.data", "r", stdin);
+    // freopen("../testcases/bulgarian.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -33,10 +33,13 @@ int main() {
         ++clk;
         // std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
         // std::cout << std::hex << pc << '\n';
-        logout = ROB_run();
-        RS_run();
         LSB_run();
         Register_run();
+        logout = ROB_run();
+        RS_run();
+        /*if (clk % 100 == 0) {
+            sleep(1);
+        }*/
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 

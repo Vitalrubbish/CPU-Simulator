@@ -2,7 +2,7 @@
 #define LSB_H
 #include "Instruction.h"
 #include "Register.h"
-const int LSB_size = 8;
+const int LSB_size = 5;
 
 extern Register regs;
 
@@ -90,12 +90,12 @@ public:
         tail = 0;
     }
 
-    void Issue();
+    bool Issue();
 
-    void ExecuteEntry();
-
-    void Broadcast();
+    bool ExecuteEntry();
 
     void CommitEntry();
+
+    bool Clear();
 };
 #endif //LSB_H

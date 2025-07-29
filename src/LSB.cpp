@@ -7,35 +7,32 @@ extern unsigned int clk;
 extern ROB rob;
 extern CDB cdb;
 
-void LSB::Issue() {
+bool LSB::Issue() {
     CDBEntry req = cdb.ReceiveRequirement(Hardware::LSB, TransferType::AddEntry);
     if (req.type != TransferType::NONE) {
         LSBEntry e{req.ins, req.index};
         AddEntry(e);
         cdb.RemoveRequirement(req);
+        // std::cout << "LSB - Issue Instruction: " << std::hex << req.ins.index << '\n';
+        return true;
     }
+    return false;
 }
 
-void LSB::ExecuteEntry() {
+bool LSB::ExecuteEntry() {
     if (!empty() && clk % 3 == 0) {
         LSBEntry lsb_entry = GetFirstEntry();
         if (lsb_entry.recorder == rob.GetHead() && lsb_entry.IsExecutable()) {
-            unsigned int value = ALU::ExecuteLS(lsb_entry.ins);
+            unsigned int value = ALU::ExecuteLS(lsb_entry);
             CDBEntry entry{Hardware::LSB, Hardware::ROB, TransferType::ModifyAfterExecute,
                 lsb_entry.recorder, value, 0, 0};
             cdb.AddRequirement(entry);
             DeleteEntry(lsb_entry);
-            // std::cout << "Execute Instruction: " << std::hex << lsb_entry.index << '\n';
+            // std::cout << "LSB - Execute Instruction: " << std::hex << lsb_entry.index << '\n';
+            return true;
         }
     }
-}
-
-void LSB::Broadcast() {
-    CDBEntry req = cdb.ReceiveRequirement(Hardware::LSB, TransferType::ModifyRecorder);
-    if (req.type == TransferType::ModifyRecorder) {
-        ModifyRecorder(req.index, req.value);
-        cdb.RemoveRequirement(req);
-    }
+    return false;
 }
 
 void LSB::CommitEntry() {
@@ -44,9 +41,16 @@ void LSB::CommitEntry() {
         ModifyRecorder(req.index, req.value);
         cdb.RemoveRequirement(req);
     }
-    req = cdb.ReceiveRequirement(Hardware::LSB, TransferType::Clear);
+
+}
+
+bool LSB::Clear() {
+    CDBEntry req = cdb.ReceiveRequirement(Hardware::LSB, TransferType::Clear);
     if (req.type != TransferType::NONE) {
         clear();
         cdb.RemoveRequirement(req);
+        // std::cout << "LSB - Clear\n";
+        return true;
     }
+    return false;
 }

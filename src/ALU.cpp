@@ -1,5 +1,4 @@
 #include "../include/ALU.h"
-
 #include "../include/LSB.h"
 
 extern unsigned int qc;
@@ -125,7 +124,8 @@ unsigned int ALU::Calculate(const RSEntry& entry){
     }
 }
 
-unsigned int ALU::ExecuteLS(const Instruction &ins) {
+unsigned int ALU::ExecuteLS(const LSBEntry &entry) {
+    Instruction ins = entry.ins;
     switch(ins.type) {
         case InstructionType::LB: {
             int imm = static_cast<int>(ins.imm << 20) >> 20;

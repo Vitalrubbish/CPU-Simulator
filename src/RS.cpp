@@ -1,19 +1,23 @@
 #include "../include/RS.h"
 #include "../include/ALU.h"
 #include "../include/CDB.h"
+#include <iostream>
 
 extern CDB cdb;
 
-void RS::Issue() {
+bool RS::Issue() {
     CDBEntry req = cdb.ReceiveRequirement(Hardware::RS, TransferType::AddEntry);
     if (req.type != TransferType::NONE) {
         RSEntry e{req.ins, req.index};
         AddEntry(e);
         cdb.RemoveRequirement(req);
+        // std::cout << "RS - Issue Instruction: " << std::hex << req.ins.index << '\n';
+        return true;
     }
+    return false;
 }
 
-void RS::ExecuteEntry() {
+bool RS::ExecuteEntry() {
     if (!empty()) {
         RSEntry rs_entry = GetFirstPreparedEntry();
         if (rs_entry.type != InstructionType::NONE) {
@@ -35,19 +39,15 @@ void RS::ExecuteEntry() {
                 rs_entry.recorder, result, pc_value, 0};
             cdb.AddRequirement(entry);
             DeleteEntry(rs_entry);
-            //std::cout << "Execute Instruction: " << std::hex << rs_entry.index << '\n';
+            // std::cout << "RS - Execute Instruction: " << std::hex << rs_entry.index << '\n';
+            if (rs_entry.index == 0x1128) {
+                int a = 1;
+            }
+            return true;
         }
     }
+    return false;
 }
-
-void RS::Broadcast() {
-    CDBEntry req = cdb.ReceiveRequirement(Hardware::RS, TransferType::ModifyRecorder);
-    if (req.type != TransferType::NONE) {
-        ModifyRecorder(req.index, req.value);
-        cdb.RemoveRequirement(req);
-    }
-}
-
 
 void RS::CommitEntry() {
     CDBEntry req = cdb.ReceiveRequirement(Hardware::RS, TransferType::ModifyRecorder);
@@ -55,9 +55,15 @@ void RS::CommitEntry() {
         ModifyRecorder(req.index, req.value);
         cdb.RemoveRequirement(req);
     }
-    req = cdb.ReceiveRequirement(Hardware::RS, TransferType::Clear);
+}
+
+bool RS::Clear() {
+    CDBEntry req = cdb.ReceiveRequirement(Hardware::RS, TransferType::Clear);
     if (req.type != TransferType::NONE) {
         clear();
         cdb.RemoveRequirement(req);
+        // std::cout << "RS - Clear\n";
+        return true;
     }
+    return false;
 }
