@@ -25,7 +25,7 @@ CDB cdb{};
 bool logout = false;
 
 int main() {
-    freopen("../testcases/basicopt1.data", "r", stdin);
+    // freopen("../testcases/basicopt1.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
