@@ -26,7 +26,7 @@ bool logout = false;
 bool cl = false;
 
 int main() {
-    freopen("../testcases/bulgarian.data", "r", stdin);
+    // freopen("../testcases/bulgarian.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
