@@ -23,6 +23,12 @@ struct LSBEntry {
         v1 = regs.GetValue(ins.rs1);
         q2 = regs.GetRecorder(ins.rs2);
         v2 = regs.GetValue(ins.rs2);
+        if (q1 == place) {
+            q1 = regs.GetOldRecorder(ins.rs1);
+        }
+        if (q2 == place) {
+            q2 = regs.GetOldRecorder(ins.rs2);
+        }
         imm = ins.imm; //注意v1 v2 a的符号问题
         dest = ins.rd;
         index = ins.index;

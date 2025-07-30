@@ -9,6 +9,7 @@ unsigned int Register::GetValue(const unsigned int& index) const {
 
 void Register::ModifyRecorder(const unsigned int &index, const int &reco, const unsigned int &val) {
     if (recorder[index] == reco) {
+        old_recorder[index] = recorder[index];
         recorder[index] = -1;
     }
     reg[index] = val;

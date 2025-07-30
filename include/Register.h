@@ -5,12 +5,14 @@
 class Register {
     unsigned int reg[32]{};
     int recorder[32]{};
+    int old_recorder[32]{};
 public:
-
-    unsigned int phy_reg = 0;
 
     Register() {
         for (int& it : recorder) {
+            it = -1;
+        }
+        for (int& it : old_recorder) {
             it = -1;
         }
     }
@@ -29,7 +31,12 @@ public:
         return recorder[index];
     }
 
+    int GetOldRecorder(const unsigned int &index) const {
+        return old_recorder[index];
+    }
+
     void PutRecorder(const unsigned int &index, const int &val) {
+        old_recorder[index] = recorder[index];
         recorder[index] = val;
     }
 
@@ -37,6 +44,9 @@ public:
 
     void clear() {
         for (int & it : recorder) {
+            it = -1;
+        }
+        for (int& it : old_recorder) {
             it = -1;
         }
     }

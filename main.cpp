@@ -26,7 +26,7 @@ bool logout = false;
 bool cl = false;
 
 int main() {
-    // freopen("../testcases/bulgarian.data", "r", stdin);
+    // freopen("../testcases/basicopt1.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -35,14 +35,14 @@ int main() {
         // std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
         // std::cout << std::hex << pc << '\n';
 
-
-        logout = ROB_run();
-        RS_run();
-        LSB_run();
         Register_run();
+        LSB_run();
+        RS_run();
+        logout = ROB_run();
 
-        /*if (clk % 100 == 0) {
-        sleep(1);
+
+        /*if (clk % 1000 == 0) {
+            sleep(1);
         }*/
         RefreshStage();
 
