@@ -124,7 +124,7 @@ unsigned int ALU::Calculate(const RSEntry& entry){
     }
 }
 
-unsigned int ALU::ExecuteLS(const LSBEntry &entry) {
+/*unsigned int ALU::ExecuteLS(const LSBEntry &entry) {
     Instruction ins = entry.ins;
     switch(ins.type) {
         case InstructionType::LB: {
@@ -168,6 +168,56 @@ unsigned int ALU::ExecuteLS(const LSBEntry &entry) {
             int imm = static_cast<int>(ins.imm << 20) >> 20;
             unsigned int index = regs.GetValue(ins.rs1) + imm;
             memo.StoreWord(index, regs.GetValue(ins.rs2));
+            return 0;
+        }
+        default: return 0;
+    }
+}*/
+
+
+unsigned int ALU::ExecuteLS(const LSBEntry &ins) {
+    switch(ins.type) {
+        case InstructionType::LB: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            return memo.LoadByte(index, true);
+        }
+        case InstructionType::LBU: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            return memo.LoadByte(index, false);
+        }
+        case InstructionType::LH: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            return memo.LoadHalf(index, true);
+        }
+        case InstructionType::LHU: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            return memo.LoadHalf(index, false);
+        }
+        case InstructionType::LW: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            return memo.LoadWord(index);
+        }
+        case InstructionType::SB: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            memo.StoreByte(index, ins.v2);
+            return 0;
+        }
+        case InstructionType::SH: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            memo.StoreHalf(index, ins.v2);
+            return 0;
+        }
+        case InstructionType::SW: {
+            int imm = static_cast<int>(ins.imm << 20) >> 20;
+            unsigned int index = ins.v1 + imm;
+            memo.StoreWord(index, ins.v2);
             return 0;
         }
         default: return 0;

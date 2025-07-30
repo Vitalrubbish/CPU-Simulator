@@ -35,11 +35,10 @@ int main() {
         // std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
         // std::cout << std::hex << pc << '\n';
 
-        Register_run();
-        LSB_run();
         RS_run();
+        Register_run();
         logout = ROB_run();
-
+        LSB_run();
 
         /*if (clk % 1000 == 0) {
             sleep(1);

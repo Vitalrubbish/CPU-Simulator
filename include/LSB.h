@@ -19,15 +19,19 @@ struct LSBEntry {
     LSBEntry() = default;
 
     explicit LSBEntry(const Instruction& ins, const int& place): ins(ins) {
-        q1 = regs.GetRecorder(ins.rs1);
-        v1 = regs.GetValue(ins.rs1);
-        q2 = regs.GetRecorder(ins.rs2);
-        v2 = regs.GetValue(ins.rs2);
-        if (q1 == place) {
-            q1 = regs.GetOldRecorder(ins.rs1);
+        if (ins.rs1 != 0) {
+            q1 = regs.GetRecorder(ins.rs1);
+            v1 = regs.GetValue(ins.rs1);
+            if (q1 == place) {
+                q1 = regs.GetOldRecorder(ins.rs1);
+            }
         }
-        if (q2 == place) {
-            q2 = regs.GetOldRecorder(ins.rs2);
+        if (ins.rs2 != 0) {
+            q2 = regs.GetRecorder(ins.rs2);
+            v2 = regs.GetValue(ins.rs2);
+            if (q2 == place) {
+                q2 = regs.GetOldRecorder(ins.rs2);
+            }
         }
         imm = ins.imm; //注意v1 v2 a的符号问题
         dest = ins.rd;
