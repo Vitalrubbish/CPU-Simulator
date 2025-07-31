@@ -14,6 +14,7 @@ struct LSBEntry {
     int q1 = -1, q2 = -1;
     unsigned int dest = 0;
     unsigned int imm = 0;
+    int tick = 0;
     int recorder = -1;
 
     LSBEntry() = default;

@@ -25,15 +25,19 @@ bool LSB::ExecuteEntry() {
     if (req.type != TransferType::NONE) {
         cdb.RemoveRequirement(req);
     }
-    if (!empty() && clk % 3 == 0) {
+    if (!empty()) {
         LSBEntry lsb_entry = GetFirstEntry();
         if (lsb_entry.recorder == req.index && lsb_entry.IsExecutable()) {
-            unsigned int value = ALU::ExecuteLS(lsb_entry);
-            CDBEntry entry{Hardware::LSB, Hardware::ROB, TransferType::ModifyAfterExecute,
-                lsb_entry.recorder, value, 0, 0};
-            cdb.AddRequirement(entry);
-            DeleteEntry(lsb_entry);
-            // std::cout << "LSB - Execute Instruction: " << std::hex << lsb_entry.index << '\n';
+            if (lsb_entry.tick == 0) {
+                entry[0].tick = 1;
+            } else if (clk % 3 == 0){
+                unsigned int value = ALU::ExecuteLS(lsb_entry);
+                CDBEntry entry{Hardware::LSB, Hardware::ROB, TransferType::ModifyAfterExecute,
+                    lsb_entry.recorder, value, 0, 0};
+                cdb.AddRequirement(entry);
+                DeleteEntry(lsb_entry);
+                // std::cout << "LSB - Execute Instruction: " << std::hex << lsb_entry.index << '\n';
+            }
             return true;
         }
     }

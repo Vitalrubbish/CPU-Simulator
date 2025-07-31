@@ -37,10 +37,10 @@ int main() {
         // std::cout << "clk = " << std::dec << clk << std::hex << " pc = " << pc << '\n';
         // std::cout << std::hex << pc << '\n';
 
+        logout = ROB_run();
+        Register_run();
         RS_run();
         LSB_run();
-        Register_run();
-        logout = ROB_run();
 
         /*if (clk % 1000 == 0) {
             sleep(1);
