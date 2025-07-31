@@ -10,7 +10,7 @@ enum class Hardware {
 
 enum class TransferType {
     ModifyAfterExecute, ModifyRecorder, Clear, SendInstruction,
-    AddEntry, PutRecorder, ModifyRecorderAndValue, NONE
+    AddEntry, PutRecorder, ModifyRecorderAndValue, GetHead, NONE
 };
 
 struct CDBEntry {
@@ -43,6 +43,13 @@ struct CDBEntry {
         this -> type = type;
         this -> ins = ins;
         this -> index = index;
+    }
+
+    CDBEntry(const Hardware& from, const Hardware& to, const TransferType& type, const int& val) {
+        this -> from = from;
+        this -> to = to;
+        this -> type = type;
+        this -> index = val;
     }
 
     bool operator== (const CDBEntry& e) const {

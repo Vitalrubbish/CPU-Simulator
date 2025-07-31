@@ -10,7 +10,6 @@
 #include "include/LSB.h"
 #include "include/Predictor.h"
 #include "include/CDB.h"
-#include <unistd.h>
 
 
 int clk = 0;
@@ -29,7 +28,7 @@ bool logout = false;
 bool cl = false;
 
 int main() {
-    // freopen("../testcases/tak.data", "r", stdin);
+    // freopen("../testcases/pi.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -42,7 +41,6 @@ int main() {
         LSB_run();
         Register_run();
         logout = ROB_run();
-
 
         /*if (clk % 1000 == 0) {
             sleep(1);

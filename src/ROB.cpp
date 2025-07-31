@@ -96,11 +96,15 @@ bool ROB::CommitEntry() {
                 clear();
                 pc = reversed_pc;
                 // std::cout << "ROB - Clear\n";
+                CDBEntry req{Hardware::ROB, Hardware::LSB, TransferType::GetHead, head};
+                cdb.AddRequirement(req);
                 return false;
             }
         }
         deleteHead();
     }
+    CDBEntry req{Hardware::ROB, Hardware::LSB, TransferType::GetHead, head};
+    cdb.AddRequirement(req);
     return false;
 }
 

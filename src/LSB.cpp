@@ -21,9 +21,13 @@ bool LSB::Issue() {
 }
 
 bool LSB::ExecuteEntry() {
+    CDBEntry req = cdb.ReceiveRequirement(Hardware::LSB, TransferType::GetHead);
+    if (req.type != TransferType::NONE) {
+        cdb.RemoveRequirement(req);
+    }
     if (!empty() && clk % 3 == 0) {
         LSBEntry lsb_entry = GetFirstEntry();
-        if (lsb_entry.recorder == rob.GetHead() && lsb_entry.IsExecutable()) {
+        if (lsb_entry.recorder == req.index && lsb_entry.IsExecutable()) {
             unsigned int value = ALU::ExecuteLS(lsb_entry);
             CDBEntry entry{Hardware::LSB, Hardware::ROB, TransferType::ModifyAfterExecute,
                 lsb_entry.recorder, value, 0, 0};
