@@ -1,4 +1,4 @@
-## Report for Branch Predictor Accuracy
+# Report for Branch Predictor Accuracy
 
 This is the report for branch predictor accuracy. 
 
