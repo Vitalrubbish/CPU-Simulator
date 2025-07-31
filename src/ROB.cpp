@@ -2,6 +2,7 @@
 #include "../include/CDB.h"
 #include "../include/Predictor.h"
 #include "../include/Memory.h"
+#include "../include/PCMover.h"
 
 
 extern CDB cdb;
@@ -38,7 +39,7 @@ bool ROB::Issue() {
         }
     }
     // std::cout << "ROB - Issue Instruction: " << std::hex << ins.index << '\n';
-    predictor.MovePc(ins);
+    PCMover::MovePc(ins);
     return true;
 }
 
@@ -82,13 +83,16 @@ bool ROB::CommitEntry() {
                 if (size() > 1 && entry[next].ins.index != entry[head].pc_value) {
                     wrong_branch_count++;
                 }
-                unsigned int ind = entry[head].ins.index % 1024;
+
+                unsigned int ind = entry[head].ins.index;
                 bool result = true, predict_result = predictor.predict(ind);
                 if (entry[head].pc_value == entry[head].ins.index + 4) {
                     result = false;
                 }
-                predictor.update(result, ind);
-                predictor.train(result, predict_result, ind);
+
+                //predictor.update(result, predict_result, ind); // Perceptron Predictor
+                predictor.update(ind, result); // Tournament Predictor
+
             }
             if (size() == 1 || size() > 1 && entry[next].ins.index != entry[head].pc_value) {
                 unsigned int reversed_pc = entry[head].pc_value;

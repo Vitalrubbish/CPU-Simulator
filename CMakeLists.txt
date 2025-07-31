@@ -26,4 +26,5 @@ add_executable(code
         src/ROB.cpp
         src/LSB.cpp
         src/Memory.cpp
+        include/PCMover.h
 )
