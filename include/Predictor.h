@@ -79,6 +79,7 @@ public:
 
     void MovePc(const Instruction& ins) const {
         bool predict_result = predict(ins.index % 1024);
+        // bool predict_result = true;
         switch (ins.type) {
             case InstructionType::JAL: {
                 int offset = static_cast<int>(ins.imm << 12) >> 12;
