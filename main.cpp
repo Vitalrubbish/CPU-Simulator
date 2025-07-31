@@ -29,7 +29,7 @@ bool logout = false;
 bool cl = false;
 
 int main() {
-    // freopen("../testcases/tak.data", "r", stdin);
+    freopen("../testcases/tak.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -52,7 +52,7 @@ int main() {
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 
-    // std::cout << std::setprecision(4) << 1 - static_cast<double>(wrong_branch_count) / branch_count << '\n';
+    std::cout << std::setprecision(4) << 1 - static_cast<double>(wrong_branch_count) / branch_count << '\n';
 
     // std::cout << "Total clk count: " << clk << '\n';
 }

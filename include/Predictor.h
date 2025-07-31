@@ -44,7 +44,7 @@ public:
     }
 
     bool predict(unsigned int index) const {
-        if (GetSum(index) >= 0) {
+        if (GetSum(index) > 0) {
             return true;
         }
         return false;
@@ -78,8 +78,7 @@ public:
     }
 
     void MovePc(const Instruction& ins) const {
-        bool predict_result = predict(ins.index % 1024);
-        // bool predict_result = true;
+        bool predict_result = predict(static_cast<int>(ins.index) % len);
         switch (ins.type) {
             case InstructionType::JAL: {
                 int offset = static_cast<int>(ins.imm << 12) >> 12;
