@@ -6,7 +6,10 @@
 
 extern CDB cdb;
 extern Memory memo;
+extern Predictor predictor;
 extern bool cl;
+extern unsigned int branch_count;
+extern unsigned int wrong_branch_count;
 
 bool ROB::Issue() {
     Instruction ins{memo.GetInstructionCode(pc), pc};
@@ -35,7 +38,7 @@ bool ROB::Issue() {
         }
     }
     // std::cout << "ROB - Issue Instruction: " << std::hex << ins.index << '\n';
-    Predictor::MovePc(ins);
+    predictor.MovePc(ins);
     return true;
 }
 
@@ -74,6 +77,19 @@ bool ROB::CommitEntry() {
             cdb.AddRequirement(regs_req);
         }
         if (entry[head].ins.BranchType()) {
+            if (entry[head].ins.type != InstructionType::JALR) {
+                branch_count++;
+                if (size() > 1 && entry[next].ins.index != entry[head].pc_value) {
+                    wrong_branch_count++;
+                }
+                unsigned int ind = entry[head].ins.index % 1024;
+                bool result = true, predict_result = predictor.predict(ind);
+                if (entry[head].pc_value == entry[head].ins.index + 4) {
+                    result = false;
+                }
+                predictor.update(result, ind);
+                predictor.train(result, predict_result, ind);
+            }
             if (size() == 1 || size() > 1 && entry[next].ins.index != entry[head].pc_value) {
                 unsigned int reversed_pc = entry[head].pc_value;
                 cl = true;

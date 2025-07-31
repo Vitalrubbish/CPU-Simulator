@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include "include/Memory.h"
 #include "include/Register.h"
 #include "include/ALU.h"
@@ -22,11 +23,13 @@ LSB lsb{};
 ALU alu{};
 Predictor predictor{};
 CDB cdb{};
+unsigned int branch_count = 0;
+unsigned int wrong_branch_count = 0;
 bool logout = false;
 bool cl = false;
 
 int main() {
-    // freopen("../testcases/basicopt1.data", "r", stdin);
+    // freopen("../testcases/bulgarian.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -36,9 +39,10 @@ int main() {
         // std::cout << std::hex << pc << '\n';
 
         RS_run();
+        LSB_run();
         Register_run();
         logout = ROB_run();
-        LSB_run();
+
 
         /*if (clk % 1000 == 0) {
             sleep(1);
@@ -48,5 +52,7 @@ int main() {
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 
-    // std::cout << "Total clk count: " << clk << '\n';
+    std::cout << std::setprecision(4) << 1 - static_cast<double>(wrong_branch_count) / branch_count << '\n';
+
+    std::cout << "Total clk count: " << clk << '\n';
 }
