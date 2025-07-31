@@ -52,7 +52,7 @@ int main() {
     }
     std::cout << std::dec << regs.GetValue(10) % 256 << '\n';
 
-    std::cout << std::setprecision(4) << 1 - static_cast<double>(wrong_branch_count) / branch_count << '\n';
+    // std::cout << std::setprecision(4) << 1 - static_cast<double>(wrong_branch_count) / branch_count << '\n';
 
-    std::cout << "Total clk count: " << clk << '\n';
+    // std::cout << "Total clk count: " << clk << '\n';
 }
