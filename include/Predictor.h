@@ -11,7 +11,7 @@ const int MINW = -8;
 const int MAXW = 7;
 
 class Predictor {
-    uint64_t history[len]{};
+    unsigned int history[len]{};
     int weight[len][history_length]{};
     int theta = 137;
     int bias[len]{};
