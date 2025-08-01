@@ -122,7 +122,7 @@ public:
 
 class Predictor {
     BasicPredictor globalPredictor;
-    BasicPredictor localPredictor;
+    BasicPredictor localPredictor[selector_size];
     SatCounter selector[selector_size];
 public:
     Predictor() = default;
@@ -132,14 +132,14 @@ public:
         if (selector[index].decide()) {
             return globalPredictor.predict(pc);
         }
-        return localPredictor.predict(pc);
+        return localPredictor[index].predict(pc);
     }
 
     void update(uint32_t pc, bool taken) {
+        uint32_t index = pc % selector_size;
         globalPredictor.update(pc, taken);
-        localPredictor.update(pc, taken);
-        if (globalPredictor.last_result != localPredictor.last_result) {
-            uint32_t index = pc % selector_size;
+        localPredictor[index].update(pc, taken);
+        if (globalPredictor.last_result != localPredictor[index].last_result) {
             if (globalPredictor.last_result == taken) {
                 selector[index].update(true);
             } else {

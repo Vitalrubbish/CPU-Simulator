@@ -90,7 +90,7 @@ bool ROB::CommitEntry() {
                     result = false;
                 }
 
-                //predictor.update(result, predict_result, ind); // Perceptron Predictor
+                // predictor.update(result, predict_result, ind); // Perceptron Predictor
                 predictor.update(ind, result); // Tournament Predictor
 
             }
