@@ -28,7 +28,7 @@ bool logout = false;
 bool cl = false;
 
 int main() {
-    // freopen("../testcases/tak.data", "r", stdin);
+    // freopen("../testcases/queens.data", "r", stdin);
     // freopen("../logrus.txt", "w", stdout);
 
     ManageInput();
@@ -39,6 +39,7 @@ int main() {
 
         logout = ROB_run();
         Register_run();
+        Decoder_run();
         RS_run();
         LSB_run();
 

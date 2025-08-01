@@ -13,7 +13,12 @@ extern unsigned int branch_count;
 extern unsigned int wrong_branch_count;
 
 bool ROB::Issue() {
-    Instruction ins{memo.GetInstructionCode(pc), pc};
+    CDBEntry req = cdb.ReceiveRequirement(Hardware::ROB, TransferType::SendInstruction);
+    if (req.type == TransferType::NONE) {
+        return false;
+    }
+    cdb.RemoveRequirement(req);
+    Instruction ins = req.ins;
     ROBEntry rob_entry{ins};
     if (full()) {
         return false;

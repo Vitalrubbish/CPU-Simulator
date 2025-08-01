@@ -78,6 +78,6 @@ public:
         }
     }
 
-    void Issue();
+    void Decode();
 };
 #endif //MEMORY_H

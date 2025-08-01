@@ -76,6 +76,10 @@ inline void RefreshStage() {
     }
 }
 
+inline void Decoder_run() {
+    memo.Decode();
+}
+
 inline bool ROB_run() {
     rob.Issue();
     rob.ExecuteEntry();
